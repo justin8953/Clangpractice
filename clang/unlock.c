@@ -13,24 +13,11 @@ int main(void)
 {
     int lock[height][width];
     start_game_1(lock,10);
-    // start_game_2(lock,10);
-    // start_game_1(lock,8);
+    start_game_2(lock,10);
+   	start_game_1(lock,8);
     
     return 0;
 }
-// void start_game_3(int lock[height][width],int num)
-// {
-//     int i=j=0;
-//     int start_num = 1;
-//     initial(lock);
-//     lock[i][j]= start_num++;
-//     go_up(lock,i,j,start_num);
-//     printf("\n");
-//     start_num = 1;
-//     initial(lock);
-//     lock[i][j]= start_num++;
-//     go_right(lock,i,j,start_num);
-// }
 void start_game_1(int lock[height][width],int num)
 {
     int i=0,j=0;

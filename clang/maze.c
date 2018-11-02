@@ -62,44 +62,6 @@ void print_arr(char maze[height][width])
    }
    printf("\n");
 }
-// int find_route(char maze[height][width], int i , int j)
-// {
-
-
-// }
-// int check(char maze[height][width], int i , int j)
-// {
-//     if (maze[i][j+1]=='#'){
-//         return 0;
-//     }else if (maze[i+1][j]='#'){
-//         return 0;
-//     }else if (maze[i-1][j]='#'){
-//         return 0;
-//     }else
-//         return 1;
-// }
-// int check(char maze[height][width], int i , int j)
-// {
-//     if (end (maze, i , j)){
-//         return 1;
-//     }
-//     if (maze[i][j+1]==' '){
-//         printf("maze[%d][%d] have route \n", i, j+1);
-//         return check(maze, i, j+1);
-//     }
-//     if (maze[i+1][j]==' '){
-//         printf("maze[%d][%d] have route \n", i+1, j);
-//         return check(maze, i+1, j);
-//     }
-//     if (maze[i-1][j]==' '){
-//         printf("maze[%d][%d] have route \n", i-1, j);
-//         return check(maze, i-1, j);
-//     }
-//     else{
-//         printf("maze has no route \n");
-//         return 0;
-//     }
-// }
 int upper_route(char maze[height][width], int i, int j)
 {
     if (end(maze, i, j))
