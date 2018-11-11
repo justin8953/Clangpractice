@@ -112,18 +112,20 @@ void law(char board[TALL][WIDE],char temp[TALL][WIDE])
 	copy(board, temp);   
 	for (i = 1; i<TALL-1; i++)
 	{
-      for (j = 1; j<WIDE-1; j++)
-      {
-         if(birth(temp,i,j)==1)
-         {
-            board[i][j]='*';
+        for (j = 1; j<WIDE-1; j++)
+        {
+            if(birth(temp,i,j)==1)
+            {
+                board[i][j]='*';
+            }else if(death(temp,i,j)==1)
+            {
+                board[i][j]='_';
+                
+            }
             
-         }else if(death(temp,i,j)==1)
-         {
-            board[i][j]='_';
-         }
-      }
-   }
+        }
+        
+    }
 }
 int check_surround(char a[TALL][WIDE], int i, int j)
 {

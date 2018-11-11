@@ -22,11 +22,12 @@ typedef struct words_list WordList;
 WordList *AllocateNode(char *s);
 void AlphabetSort(WordList *l, char *word);
 void PrintfList(WordList *l);
+int Findword(WordList *l, char *word);
 double execution_time(clock_t start, clock_t end);
 int main(void)
 {
     int num_words, i;
-    char word[MAX_Length];
+    char word[MAX_Length], newWord[MAX_Length];
     WordList *start_node;
     
     clock_t start, end;
@@ -47,8 +48,28 @@ int main(void)
         }
     }
     PrintfList(start_node);
+    scanf("%s", newWord);
+    if(Findword(start_node, newWord))
+    {
+        printf("find the word \n");
+    }else
+    {
+        printf("no this word \n");
+    }
     end = clock();
     printf("Execution time is %lf \n", execution_time(start,end));
+    return 0;
+}
+int Findword(WordList *l, char *word)
+{
+    while (l->next != NULL)
+    {
+        l = l->next;
+        if (strcmp(l->word,word)==0)
+        {
+            return 1;
+        }
+    }
     return 0;
 }
 void AlphabetSort(WordList *l, char *word)
