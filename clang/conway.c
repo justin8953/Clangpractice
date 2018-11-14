@@ -1,12 +1,12 @@
 #include<stdio.h>
 #include<assert.h>
-#include<time.h>
-#define MAX 1000000000
+#define MAX 30000000
 #define WIDTH 7
 #define HEIGHT 8
 #define EMPTY '.'
 #define PEG '*'
 
+/* A structure which contains one 2D board and its parent number */
 struct boardselem
 {
 	char bd[HEIGHT][WIDTH];
@@ -14,7 +14,7 @@ struct boardselem
 };
 typedef struct boardselem Elem;
 
-/* Big 1D Board which stores each 2D board */
+/* Big 1D array's board which stores each 2D board and the count store every 2D board index */
 struct boardlist
 {
 	Elem bdlist[MAX];
@@ -22,7 +22,12 @@ struct boardlist
 };
 typedef struct boardlist BOARDLIST;
 
+/* -------------------------------------------------------------------------------  */
 
+void check_each_cell(BOARDLIST *s, char tmp[HEIGHT][WIDTH], int num_cell);
+void jump_up (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
+void jump_left (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
+void jump_right (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
 
 /* check that the peg can be avaliable to move  */
 int jump_up_valid(char bd[HEIGHT][WIDTH], int i, int j);
@@ -31,7 +36,6 @@ int jump_left_valid(char bd[HEIGHT][WIDTH], int i, int j);
 
 /* print the solution  */
 void print_parent(BOARDLIST *s, int parent_num);
-
 void print_array(char bd[HEIGHT][WIDTH]);
 /* Initialise the 2D board */
 void Initialiseboard(char bd[HEIGHT][WIDTH]);
@@ -41,26 +45,28 @@ void InitialiseboardList(BOARDLIST *s);
 void copy(char bd1[HEIGHT][WIDTH], char bd2[HEIGHT][WIDTH]);
 int start(BOARDLIST *s, int x_end, int y_end);
 
+void test_all();
+int test_start();
+int test_jump_left(char bd[HEIGHT][WIDTH],int i, int j);
+int test_jump_right(char bd[HEIGHT][WIDTH],int i, int j);
+int test_jump_left(char bd[HEIGHT][WIDTH],int i, int j);
+
 int main(void)
 {
     static BOARDLIST s;
     int x_end, y_end, num;
+    test_all();
     InitialiseboardList(&s);
-    x_end= 3;
-    y_end =1;
+    printf("Please input the location (x,y) you want to reach \n");
+    scanf("%d %d", &x_end,&y_end);
     num =start(&s, x_end,y_end);
-    printf("%d \n", num);
     print_parent(&s,num);
     return 1;
 
 }
-
-
-
-
 /*------------------------------------------------------------- */
-/* Initialised function */
 
+/* Initialised function */
 /*set up first board*/
 void Initialiseboard(char bd[HEIGHT][WIDTH])
 {
@@ -92,69 +98,86 @@ void InitialiseboardList(BOARDLIST *s)
 }
 
 /*------------------------------------------------------------- */
-
+/* start game */
 int start(BOARDLIST *s, int x_end, int y_end)
 {
-    int num_cell, i, j;
+    int num_cell;
     char tmp[HEIGHT][WIDTH];
     /* check the 2D board that is available to jump from the first cell in boardlist */
     num_cell = s->count;
+    printf("%d \n", s->count);
     do
     {
         /* if 2D board reach the goal, it return its parent */
         if (s->bdlist[num_cell].bd[y_end][x_end]==PEG)
         {
             printf("reach\n");
-            printf("count is %d ", s->count);
             print_array(s->bdlist[num_cell].bd);
             return s->bdlist[num_cell].parent;
         }
         /* check each cell in the 2D board  */
-        for(i = 0; i<HEIGHT; i++)
-        {
-            for(j = 0;j<WIDTH; j++)
-            {
-                if (s->bdlist[num_cell].bd[i][j]==PEG)
-                {
-                    if(jump_up_valid(s->bdlist[num_cell].bd, i, j))
-                    {
-                        copy(s->bdlist[num_cell].bd, tmp);
-                        s->count++;
-                        s->bdlist[s->count].parent = num_cell;
-                        tmp[i][j]=EMPTY;
-                        tmp[i-1][j]=EMPTY;
-                        tmp[i-2][j]=PEG;
-                        copy(tmp,s->bdlist[s->count].bd);
-                    }
-                    if(jump_right_valid(s->bdlist[num_cell].bd, i, j))
-                    {
-                        copy(s->bdlist[num_cell].bd, tmp);
-                        s->count++;
-                        s->bdlist[s->count].parent = num_cell;
-                        tmp[i][j]=EMPTY;
-                        tmp[i][j+1]=EMPTY;
-                        tmp[i][j+2]=PEG;
-                        copy(tmp,s->bdlist[s->count].bd);
-                    }
-                    if(jump_left_valid(s->bdlist[num_cell].bd, i, j))
-                    {
-                        copy(s->bdlist[num_cell].bd, tmp);
-                        s->count++;
-                        s->bdlist[s->count].parent = num_cell;
-                        tmp[i][j]=EMPTY;
-                        tmp[i][j-1]=EMPTY;
-                        tmp[i][j-2]=PEG;
-                        copy(tmp,s->bdlist[s->count].bd);
-                    }
-
-                }
-            }
-        }
+        check_each_cell(s,tmp,num_cell);
         num_cell ++;
     }while(num_cell!=0);
     return 0;
 }
-
+/* check each cell. if it can be available to jump, it does jump*/
+void check_each_cell(BOARDLIST *s, char tmp[HEIGHT][WIDTH], int num_cell)
+{
+    int i, j;
+    for(i = 0; i<HEIGHT; i++)
+    {
+        for(j = 0;j<WIDTH; j++)
+        {
+            if (s->bdlist[num_cell].bd[i][j]==PEG)
+            {
+                if(jump_up_valid(s->bdlist[num_cell].bd, i, j))
+                {
+                    jump_up(tmp,i,j,num_cell, s);
+                }
+                if(jump_right_valid(s->bdlist[num_cell].bd, i, j))
+                {
+                    jump_right(tmp,i,j,num_cell, s);
+                }
+                if(jump_left_valid(s->bdlist[num_cell].bd, i, j))
+                {
+                    jump_left(tmp,i,j,num_cell, s);
+                }
+            }
+        }
+    }
+}
+/* Jump function: if tile can jump, copy origin board to tempory board. Then,  change the board and copy to new board */
+void jump_up (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s)
+{
+    copy(s->bdlist[num_cell].bd, tmp);
+    s->count++;
+    s->bdlist[s->count].parent = num_cell;
+    tmp[i][j]=EMPTY;
+    tmp[i-1][j]=EMPTY;
+    tmp[i-2][j]=PEG;
+    copy(tmp,s->bdlist[s->count].bd);    
+}
+void jump_left (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s)
+{
+    copy(s->bdlist[num_cell].bd, tmp);
+    s->count++;
+    s->bdlist[s->count].parent = num_cell;
+    tmp[i][j]=EMPTY;
+    tmp[i][j-1]=EMPTY;
+    tmp[i][j-2]=PEG;
+    copy(tmp,s->bdlist[s->count].bd);
+}
+void jump_right (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s)
+{
+    copy(s->bdlist[num_cell].bd, tmp);
+    s->count++;
+    s->bdlist[s->count].parent = num_cell;
+    tmp[i][j]=EMPTY;
+    tmp[i][j+1]=EMPTY;
+    tmp[i][j+2]=PEG;
+    copy(tmp,s->bdlist[s->count].bd);
+}
 
 /* check that the peg can be avaliable to move  */
 int jump_up_valid(char bd[HEIGHT][WIDTH], int i, int j)
