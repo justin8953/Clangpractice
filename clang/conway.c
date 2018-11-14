@@ -1,154 +1,82 @@
 #include<stdio.h>
 #include<assert.h>
 #include<time.h>
-#define TOTAL_SIZE 229999999999
-#define SINGLE_WIDTH 7
-#define SINGLE_HEIGHT 8
+#define MAX 1000000000
+#define WIDTH 7
+#define HEIGHT 8
+#define EMPTY '.'
+#define PEG '*'
 
-/* 2D Board with its parent number*/
-struct single_board
+struct boardselem
 {
-	char board[SINGLE_HEIGHT][SINGLE_WIDTH];
+	char bd[HEIGHT][WIDTH];
 	int parent;
 };
-typedef struct single_board SINGLEBOARD;
+typedef struct boardselem Elem;
 
 /* Big 1D Board which stores each 2D board */
-struct board_list
+struct boardlist
 {
-	SINGLEBOARD boards[TOTAL_SIZE];
+	Elem bdlist[MAX];
 	int count;
 };
-typedef struct board_list BOARDLIST;
+typedef struct boardlist BOARDLIST;
 
 
-void Delay(unsigned int secs);
-void print_array(char board[SINGLE_HEIGHT][SINGLE_WIDTH]);
-void Initialiseboard(char board[SINGLE_HEIGHT][SINGLE_WIDTH]);
+
+/* check that the peg can be avaliable to move  */
+int jump_up_valid(char bd[HEIGHT][WIDTH], int i, int j);
+int jump_right_valid(char bd[HEIGHT][WIDTH], int i, int j);
+int jump_left_valid(char bd[HEIGHT][WIDTH], int i, int j);
+
+/* print the solution  */
+void print_parent(BOARDLIST *s, int parent_num);
+
+void print_array(char bd[HEIGHT][WIDTH]);
+/* Initialise the 2D board */
+void Initialiseboard(char bd[HEIGHT][WIDTH]);
+/* Initialise the 1D big board */
 void InitialiseboardList(BOARDLIST *s);
-void copy(char board[SINGLE_HEIGHT][SINGLE_WIDTH],char tmp[SINGLE_HEIGHT][SINGLE_WIDTH]);
-int game_start (BOARDLIST *s, int p, int q);
-
-/*Test jump function */
-void test_jump (char board[SINGLE_HEIGHT][SINGLE_WIDTH]);
-int jump_up (char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j);
-int jump_left (char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j);
-int jump_right (char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j);
+/* copy board */
+void copy(char bd1[HEIGHT][WIDTH], char bd2[HEIGHT][WIDTH]);
+int start(BOARDLIST *s, int x_end, int y_end);
 
 int main(void)
 {
-    static BOARDLIST p;
-	int x, y;
-	printf("Please enter the location (a, b)you want to reach \n");
-	scanf("%d %d", &x, &y);
-    InitialiseboardList(&p);
-	game_start(&p,y ,x);
-	/*assert(game_start(&p,y ,x)==1);*/
-	
+    static BOARDLIST s;
+    int x_end, y_end, num;
+    InitialiseboardList(&s);
+    x_end= 3;
+    y_end =1;
+    num =start(&s, x_end,y_end);
+    printf("%d \n", num);
+    print_parent(&s,num);
+    return 1;
+
 }
 
-int game_start (BOARDLIST *s, int p, int q)
-{
-	int i, j;
-	char tmp[SINGLE_HEIGHT][SINGLE_WIDTH];
-	/* reach the location of user inputs */
-	if (s->boards[s->count].board[p][q]=='*')
-	{
-		printf("Sucess \n");
-		return 1;
-	}
-	copy(s->boards[s->count].board,tmp);
-	for (i=0; i<SINGLE_HEIGHT; i++)
-	{
-		for(j = 0; j<SINGLE_WIDTH; j++ )
-		{
-			if(tmp[i][j]=='*')
-			{
-				/* if the tile jumps, put the 2d array into next address in big board  */
-				if (tmp[i-1][j]=='*'&& tmp[i-2][j]=='.'&& (i-1)>=0)
-				{
-					s->count++;
-					s->boards[s->count].parent = s->count;
-					tmp [i][j]='.';
-					tmp[i-1][j]= '.';
-					tmp[i-2][j]= '*';
-					copy(tmp,s->boards[s->count].board);
-					game_start(s, p, q);
-				}
-				if(tmp[i][j+1]=='*'&& tmp[i][j+2]=='.')
-				{
-					s->count++;
-					s->boards[s->count].parent = s->count;
-					tmp [i][j]='.';
-					tmp[i][j+1]= '.';
-					tmp[i][j+2]= '*';
-					copy(tmp,s->boards[s->count].board);
-					game_start(s, p, q);
-				}
-				if(tmp[i][j-1]=='*'&& tmp[i][j-2]=='.'&& (j-1)>0)
-				{
-					s->count++;
-					s->boards[s->count].parent = s->count;
-					tmp [i][j]='.';
-					tmp[i][j-1]= '.';
-					tmp[i][j-2]= '*';
-					copy(tmp,s->boards[s->count].board);
-					game_start(s, p, q);
-				}
-			}
-		}
-	}
-	return 0 ;
-}
 
-/* copy array */
-void copy(char board[SINGLE_HEIGHT][SINGLE_WIDTH],char tmp[SINGLE_HEIGHT][SINGLE_WIDTH])
-{
-	int i, j;
-	for (i = 0; i<SINGLE_HEIGHT; i++)
-	{
-		for (j = 0; j<SINGLE_WIDTH; j++)
-		{
-			tmp[i][j] = board[i][j];
-		}
-	}	
-}
-/* print array */
-void print_array(char board[SINGLE_HEIGHT][SINGLE_WIDTH])
-{
-	int i, j;
-	for (i = 0; i<SINGLE_HEIGHT; i++)
-	{
-		for (j = 0; j<SINGLE_WIDTH; j++)
-		{
-			printf("%c", board[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n");
-}
-/* set 1 sec delay */
-void Delay(unsigned int secs)
-{
-   unsigned int Time = time(0) + secs;
-   while(time(0)<Time);
-}
+
+
+/*------------------------------------------------------------- */
+/* Initialised function */
+
 /*set up first board*/
-void Initialiseboard(char board[SINGLE_HEIGHT][SINGLE_WIDTH])
+void Initialiseboard(char bd[HEIGHT][WIDTH])
 {
 	int i, j;
-	for (i = 0; i<SINGLE_HEIGHT/2; i++)
+	for (i = 0; i<HEIGHT/2; i++)
 	{
-		for (j = 0; j<SINGLE_WIDTH; j++)
+		for (j = 0; j<WIDTH; j++)
 		{
-			board[i][j] = '.';
+			bd[i][j] = EMPTY;
 		}
 	}
-	for (i = SINGLE_HEIGHT/2 ; i< SINGLE_HEIGHT; i++)
+	for (i = HEIGHT/2 ; i< HEIGHT; i++)
 	{
-		for(j = 0; j< SINGLE_WIDTH; j++)
+		for(j = 0; j< WIDTH; j++)
 		{
-			board[i][j]= '*';
+			bd[i][j]= PEG;
 		}
 	}
 }
@@ -156,62 +84,137 @@ void Initialiseboard(char board[SINGLE_HEIGHT][SINGLE_WIDTH])
 /*store the initilised board into  Big board 1st address  */
 void InitialiseboardList(BOARDLIST *s)
 {
-    char bd[SINGLE_HEIGHT][SINGLE_WIDTH]; 
+    char board[HEIGHT][WIDTH]; 
 	s->count = 0;
-    Initialiseboard(bd);
-    print_array(bd);
-    copy(bd,s->boards[s->count].board);
-    s->boards[s->count].parent = 0;
+    Initialiseboard(board);
+    copy(board,s->bdlist[s->count].bd);
+    s->bdlist[s->count].parent = 0;
 }
 
-/* these are testing function */
-void test_jump (char board[SINGLE_HEIGHT][SINGLE_WIDTH])
+/*------------------------------------------------------------- */
+
+int start(BOARDLIST *s, int x_end, int y_end)
 {
-	assert(jump_up(board, 5,4));
-	assert(jump_up(board, 5,5));
-	assert(jump_right(board, 3,4));
-	assert(jump_up(board, 5,0));
-	assert(jump_up(board, 5,1));
-	assert(jump_right(board, 3,0));
+    int num_cell, i, j;
+    char tmp[HEIGHT][WIDTH];
+    /* check the 2D board that is available to jump from the first cell in boardlist */
+    num_cell = s->count;
+    do
+    {
+        /* if 2D board reach the goal, it return its parent */
+        if (s->bdlist[num_cell].bd[y_end][x_end]==PEG)
+        {
+            printf("reach\n");
+            printf("count is %d ", s->count);
+            print_array(s->bdlist[num_cell].bd);
+            return s->bdlist[num_cell].parent;
+        }
+        /* check each cell in the 2D board  */
+        for(i = 0; i<HEIGHT; i++)
+        {
+            for(j = 0;j<WIDTH; j++)
+            {
+                if (s->bdlist[num_cell].bd[i][j]==PEG)
+                {
+                    if(jump_up_valid(s->bdlist[num_cell].bd, i, j))
+                    {
+                        copy(s->bdlist[num_cell].bd, tmp);
+                        s->count++;
+                        s->bdlist[s->count].parent = num_cell;
+                        tmp[i][j]=EMPTY;
+                        tmp[i-1][j]=EMPTY;
+                        tmp[i-2][j]=PEG;
+                        copy(tmp,s->bdlist[s->count].bd);
+                    }
+                    if(jump_right_valid(s->bdlist[num_cell].bd, i, j))
+                    {
+                        copy(s->bdlist[num_cell].bd, tmp);
+                        s->count++;
+                        s->bdlist[s->count].parent = num_cell;
+                        tmp[i][j]=EMPTY;
+                        tmp[i][j+1]=EMPTY;
+                        tmp[i][j+2]=PEG;
+                        copy(tmp,s->bdlist[s->count].bd);
+                    }
+                    if(jump_left_valid(s->bdlist[num_cell].bd, i, j))
+                    {
+                        copy(s->bdlist[num_cell].bd, tmp);
+                        s->count++;
+                        s->bdlist[s->count].parent = num_cell;
+                        tmp[i][j]=EMPTY;
+                        tmp[i][j-1]=EMPTY;
+                        tmp[i][j-2]=PEG;
+                        copy(tmp,s->bdlist[s->count].bd);
+                    }
+
+                }
+            }
+        }
+        num_cell ++;
+    }while(num_cell!=0);
+    return 0;
 }
 
-int jump_up (char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j)
+
+/* check that the peg can be avaliable to move  */
+int jump_up_valid(char bd[HEIGHT][WIDTH], int i, int j)
 {
-	if (board[i-1][j]=='*'&& board[i-2][j]=='.')
+    if (bd[i-1][j]==PEG&& bd[i-2][j]==EMPTY&&(i-2)>0)
+    {
+        return 1;
+    }
+    return 0;
+}
+int jump_left_valid(char bd[HEIGHT][WIDTH], int i, int j)
+{
+    if (bd[i][j-1]==PEG&& bd[i][j-2]==EMPTY&&(j-2)>0)
+    {
+        return 1;
+    }
+    return 0;
+}
+int jump_right_valid(char bd[HEIGHT][WIDTH], int i, int j)
+{
+    if (bd[i][j+1]==PEG&& bd[i][j+2]==EMPTY&&(j+2)<WIDTH)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+/*------------------------------------------------------------- */
+/* copy array */
+void copy(char bd1[HEIGHT][WIDTH],char bd2[HEIGHT][WIDTH])
+{
+	int i, j;
+	for (i = 0; i<HEIGHT; i++)
 	{
-		board [i][j]='.';
-		board[i-1][j]= '.';
-		board[i-2][j]= '*';
-		print_array(board);
-		return 1;
+		for (j = 0; j<WIDTH; j++)
+		{
+			bd2[i][j] = bd1[i][j];
+		}
 	}	
-	return 0;	
 }
-int jump_right (char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j)
+/* print array */
+void print_array(char bd[HEIGHT][WIDTH])
 {
-	if (board[i][j+1]=='*'&& board[i][j+2]=='.')
+	int i, j;
+	for (i = 0; i<HEIGHT; i++)
 	{
-		board [i][j]='.';
-		board[i][j+1]= '.';
-		board[i][j+2]= '*';
-		print_array(board);
-		return 1;
+		for (j = 0; j<WIDTH; j++)
+		{
+			printf("%c", bd[i][j]);
+		}
+		printf("\n");
 	}
-	return 0;	
+	printf("\n");
 }
-int jump_left(char board[SINGLE_HEIGHT][SINGLE_WIDTH], int i, int j)
+
+/* print the solution  */
+void print_parent(BOARDLIST *s, int parent_num)
 {
-	if (board[i][j-1]=='*'&& board[i][j-2]=='.')
-	{
-		board [i][j]='.';
-		board[i][j-1]= '.';
-		board[i][j-2]= '*';
-		print_array(board);
-		return 1;
-	}	
-	return 0;	
+    do{
+        print_array(s->bdlist[parent_num].bd);
+        parent_num = s->bdlist[parent_num].parent;
+    }while(parent_num != 0);
 }
-
-
-
-
