@@ -1,10 +1,13 @@
 #include<stdio.h>
 #include<assert.h>
-#define MAX 1000000000
+#define MAX 3499999
 #define WIDTH 7
 #define HEIGHT 8
 #define EMPTY '.'
 #define PEG '*'
+
+
+/* Declaration */
 
 /* check that the peg can be avaliable to move  */
 int jump_up_valid(char bd[HEIGHT][WIDTH], int i, int j);
@@ -17,8 +20,9 @@ int test_jump_up(char bd[HEIGHT][WIDTH],int i, int j);
 int test_jump_right(char bd[HEIGHT][WIDTH],int i, int j);
 int test_jump_left(char bd[HEIGHT][WIDTH],int i, int j);
 
+/* -----------------------------------------------------------------------------------------------------  */
 
-
+/* Function */
 int test_jump_up(char bd[HEIGHT][WIDTH],int i, int j)
 {
     if(jump_up_valid(bd, i, j))

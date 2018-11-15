@@ -1,6 +1,7 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<assert.h>
-#define MAX 30000000
+#define MAX 3499999
 #define WIDTH 7
 #define HEIGHT 8
 #define EMPTY '.'
@@ -9,22 +10,31 @@
 /* A structure which contains one 2D board and its parent number */
 struct boardselem
 {
-	char bd[HEIGHT][WIDTH];
-	int parent;
+    char bd[HEIGHT][WIDTH];
+    int parent;
 };
 typedef struct boardselem Elem;
 
 /* Big 1D array's board which stores each 2D board and the count store every 2D board index */
 struct boardlist
 {
-	Elem bdlist[MAX];
-	int count;
+    Elem bdlist[MAX];
+    int count;
 };
 typedef struct boardlist BOARDLIST;
 
-/* -------------------------------------------------------------------------------  */
+/* -----------------------------------------------------------------------------------------------------  */
+/* Declaration */
 
+/* star the game, and if the function finds the solution, it will return the final board's parent number' */
+int start(BOARDLIST *s, int x_end, int y_end);
+/*
+chech each cell in 2D board. if cell can jump, then add a new board and copy origin board into new board, 
+moving the cell in the new board
+*/
 void check_each_cell(BOARDLIST *s, char tmp[HEIGHT][WIDTH], int num_cell);
+
+/* jump function */
 void jump_up (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
 void jump_left (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
 void jump_right (char tmp[HEIGHT][WIDTH], int i, int j, int num_cell, BOARDLIST *s);
@@ -36,20 +46,23 @@ int jump_left_valid(char bd[HEIGHT][WIDTH], int i, int j);
 
 /* print the solution  */
 void print_parent(BOARDLIST *s, int parent_num);
-void print_array(char bd[HEIGHT][WIDTH]);
+
 /* Initialise the 2D board */
 void Initialiseboard(char bd[HEIGHT][WIDTH]);
 /* Initialise the 1D big board */
 void InitialiseboardList(BOARDLIST *s);
+
+void print_array(char bd[HEIGHT][WIDTH]);
 /* copy board */
 void copy(char bd1[HEIGHT][WIDTH], char bd2[HEIGHT][WIDTH]);
-int start(BOARDLIST *s, int x_end, int y_end);
-
+/* testing function */
 void test_all();
 int test_start();
 int test_jump_left(char bd[HEIGHT][WIDTH],int i, int j);
 int test_jump_right(char bd[HEIGHT][WIDTH],int i, int j);
 int test_jump_left(char bd[HEIGHT][WIDTH],int i, int j);
+
+/* -----------------------------------------------------------------------------------------------------  */
 
 int main(void)
 {
@@ -57,16 +70,23 @@ int main(void)
     int x_end, y_end, num;
     test_all();
     InitialiseboardList(&s);
-    printf("Please input the location (x,y) you want to reach \n");
+    printf("Please input the location (col,row) you want to reach \n");
     scanf("%d %d", &x_end,&y_end);
-    num =start(&s, x_end,y_end);
-    print_parent(&s,num);
+    if((num =start(&s, x_end,y_end))==0)
+    {
+        printf("It exceeds memory maximum size. No solution \n");
+    }
+    else
+    {
+        print_parent(&s,num);
+    }
     return 1;
 
 }
-/*------------------------------------------------------------- */
+/* -----------------------------------------------------------------------------------------------------  */
 
 /* Initialised function */
+
 /*set up first board*/
 void Initialiseboard(char bd[HEIGHT][WIDTH])
 {
@@ -97,7 +117,7 @@ void InitialiseboardList(BOARDLIST *s)
     s->bdlist[s->count].parent = 0;
 }
 
-/*------------------------------------------------------------- */
+/* -----------------------------------------------------------------------------------------------------  */
 /* start game */
 int start(BOARDLIST *s, int x_end, int y_end)
 {
@@ -105,7 +125,6 @@ int start(BOARDLIST *s, int x_end, int y_end)
     char tmp[HEIGHT][WIDTH];
     /* check the 2D board that is available to jump from the first cell in boardlist */
     num_cell = s->count;
-    printf("%d \n", s->count);
     do
     {
         /* if 2D board reach the goal, it return its parent */
@@ -118,7 +137,7 @@ int start(BOARDLIST *s, int x_end, int y_end)
         /* check each cell in the 2D board  */
         check_each_cell(s,tmp,num_cell);
         num_cell ++;
-    }while(num_cell!=0);
+    }while(num_cell!=0 && s->count<MAX);
     return 0;
 }
 /* check each cell. if it can be available to jump, it does jump*/
@@ -205,7 +224,7 @@ int jump_right_valid(char bd[HEIGHT][WIDTH], int i, int j)
     return 0;
 }
 
-/*------------------------------------------------------------- */
+/* -----------------------------------------------------------------------------------------------------  */
 /* copy array */
 void copy(char bd1[HEIGHT][WIDTH],char bd2[HEIGHT][WIDTH])
 {
