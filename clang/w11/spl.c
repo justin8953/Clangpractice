@@ -6,13 +6,14 @@ int main(int argc, char** argv)
    dic* dl;
    dic* db;
    FILE* fw, *fb;
+   int count = 0;
    char str[MAXWORD];
    
    if(argc != 3){
       fprintf(stderr, "Usage : i%s <dictionary file> <file to spell-check>\n", argv[0]);
       exit(1);
    }
-
+   
    dl = dic_init(MAXWORD);
    db = dic_init(MAXWORD);
    fw = fopen(argv[1], "r");
@@ -21,24 +22,24 @@ int main(int argc, char** argv)
       fprintf(stderr, "Can't open %s or %s\n", argv[1], argv[2]);
       exit(1);
    }
-
+   
    /* Main spelling list read into dl */
    while(fscanf(fw, "%s", str) == 1){
       dic_insert(dl, str);
    }
    fclose(fw);
-
    /* Read in book - each spelling mistake stored into db
       so that you don't have to search for it again */
    while(fscanf(fb, "%s", str) == 1){
       if(!dic_isin(dl, str) && !dic_isin(db,str)){
          dic_insert(db, str);
+         count++;
+         printf("%s \n",str);
       }
    }
+   printf("%d \n",count);
    fclose(fb);
-
    dic_free(&dl);
    dic_free(&db);
-
    return 0;
 }

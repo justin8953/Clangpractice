@@ -1,24 +1,24 @@
-#ifndef __BST__H__
-#define __BST__H__
+#ifndef __HSH__H__
+#define __HSH__H__
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
+#define MAXSIZE 40000
 #define ON_ERROR(STR) fprintf(stderr, STR); exit(EXIT_FAILURE)
 enum bool {false, true};
 typedef enum bool bool;
-
-/* BST structure dictionary */
-typedef struct dictionary 
+typedef struct dictype {char* word; struct dictype *next;} dictype;
+typedef struct dictinary 
 {
-   char *word;
-   struct dictionary *left;
-   struct dictionary *right;
+   dictype *p;
+   int sz; 
 } dic;
 
 /* Cretate empty dict */
 dic* dic_init(int size);
+dictype *chain_initi(char *v);
+bool check_table_full(dic *s);
+int hash(char *s,int tablesize);
 
 /* Add one element into the dict */
 void dic_insert(dic*s, char *v);
@@ -29,5 +29,6 @@ bool dic_isin(dic*s, char *v);
 /* Finish up */
 /* Clears all space used, and sets pointer to NULL */
 void dic_free(dic **s);
+
 
 #endif

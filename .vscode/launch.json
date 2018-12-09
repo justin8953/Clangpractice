@@ -4,13 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+
         {
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/Users/apple/Desktop/projects/Clangpractice/Clangpractice/clang/test",
-            "args": [],
+            "program": "/Users/apple/Desktop/projects/Clangpractice/Clangpractice/clang/w11/splhsh.c",
+            "args": ["eng_370k_shuffle.txt","heart_darkness.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
