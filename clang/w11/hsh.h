@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAXSIZE 30000
+#define GROWFACT 2
+#define GROWCON 0.6
 #define HASHNUM 5381
 #define HASHMUTINUM 33
-#define EMPTY ""
+#define EMPTY 0
 #define ON_ERROR(STR) fprintf(stderr, STR); exit(EXIT_FAILURE)
 
 enum bool {false, true};
@@ -16,17 +17,19 @@ typedef enum bool bool;
    for solving collision. 
 */
 struct dictype {
-   char* word; 
+   char *word; 
    struct dictype *next;
 };
 typedef struct dictype dictype;
 
 /* dictionary hash table 
    sz is the size of the dictionary
+   num number of element in dictionary
 */
 struct dictinary 
 {
-   dictype *table;
+   dictype **table;
+   int num;
    int sz; 
 };
 typedef struct dictinary dic;
@@ -37,8 +40,6 @@ dic* dic_init(int size);
 /* intialise the linked list cell */
 dictype *chain_initi(char *v);
 
-/* check the hash table is fulled */
-bool table_isFulled(dic *s);
 
 /* hashing function */
 int hash(char *s,int tablesize);
@@ -48,7 +49,9 @@ void dic_insert(dic*s, char *v);
 
 /* Returns true if v is in the array, false elsewise */
 bool dic_isin(dic*s, char *v);
-dictype *resize(dic *s, char *v);
+
+/* Grow the table */
+void grow(dic *s);
 
 /* Finish up */
 /* Clears all space used, and sets pointer to NULL */

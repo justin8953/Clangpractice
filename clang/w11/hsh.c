@@ -1,9 +1,7 @@
 #include "hsh.h"
 
-/* This is hashing function:
-   % talbesize to get string index
-*/
-int hash(char *s, int tablesize)
+/* Hashing function*/
+int hash(char *s, int size)
 {
    unsigned long hash = HASHNUM;
    int c;
@@ -11,143 +9,149 @@ int hash(char *s, int tablesize)
    {
       hash = HASHMUTINUM* hash^c;
    }
-   return (int)(hash%tablesize);
+   return (int)(hash%size);
 }
 
-bool table_isFulled(dic *s)
-{
-   int i ;
-   for (i= 0 ; i<s->sz;i++)
-   {
-      if (strcmp(s->table[i].word,EMPTY)==0)
-      {
-         return false;
-      }
-   }
-   return true;
-}
-/* 
+/* DIC initialise
    1.Intialise the dictionary 
    2.Initialise the hash table
-   3.Intialise the cell in hash talbe with WORDSIZE
-   4.Set the size with MAXSIZE 
+   3.Intialise the cell in hash talbe
+   4.Set the size 
+   5.Set the number of element = 0 
 */
 dic* dic_init(int size)
 {
-   dic * dict;
+   dic *dict;
    int i ;
-   dict = (dic*)calloc(1, sizeof(dic));
+   dict = (dic*)malloc(sizeof(dic));
    if (dict==NULL)
    {
-      ON_ERROR("Creation of Dictionary Failed");
+      ON_ERROR("Creation of Dictionary Failed \n");
    }
-   dict->table = (dictype *)calloc(MAXSIZE, sizeof(dictype));
+   dict -> sz = size;
+   dict -> num = 0;
+   dict->table = (dictype **)calloc(size,sizeof(dictype));
    if (dict->table==NULL)
    {
-      ON_ERROR("Creation of Dictionary Failed");
+      ON_ERROR("Creation of Table Failed \n");
    }
-   for (i=0 ; i< MAXSIZE; i++)
+   for (i=0 ; i< dict -> sz; i++)
    {
-      dict->table[i].word = (char *)calloc(1, sizeof(char)*size);
+      dict->table[i] = EMPTY;
    }
-   dict ->sz = MAXSIZE;
    return dict;
 }
-/* for solving collision
-   1.Intialise the chain listed 
-*/
-
+/*  Intialise the separate chain */
 dictype *chain_initi(char *v)
 {
    dictype *node;
-   node = (dictype *)calloc(1, sizeof(dictype));
-   node->word = (char *)calloc(1, strlen(v)+1);
+   node = (dictype *)malloc(sizeof(dictype));
+   node->word = (char *)malloc(sizeof(char)*(strlen(v)+1));
    return node;
 }
-
-dictype *resize(dic *s, char *v)
-{
+/* Grow Table
+      1. Create New Dict and Initialise 
+         it size with 2 times large
+      2. Rehash previous Dict and Insert
+         into new Dict
+      3. Store old dic in tempory place
+         and Swap old and new dictionary
+      4. free the old dictionary 
+*/
+void grow(dic *s)
+{     
+      dic *NewDict, tmp;
       dictype *p;
-      p = (dictype *)realloc(s->table, sizeof(dictype)*(s->sz+1));
-      p[s->sz].word = (char *)calloc(1, sizeof(char)*(strlen(v)+1));
-      s->sz = s->sz +1;
-      return p;
+      int i;
+      NewDict = dic_init(s->sz*GROWFACT);
+      for (i=0; i<s->sz; i++)
+      {
+
+            p = s->table[i];
+            while(p!=EMPTY)
+            {
+                  dic_insert(NewDict,p->word);
+                  p = p->next;
+                  
+            }
+      }
+      tmp = *s;
+      *s = *NewDict;
+      *NewDict = tmp;
+      dic_free(&NewDict);
+      
 }
 
 /* 
-   1. if table is fulled, then reallocate 
-      the table size.
+   1. if number of element is over a factor 0.6 of 
+      table size, then grow the table.
    2. get the index from hashing function. 
-   3. if collision occurs, create newnode
-      and initialise it. Newnode chain with the 
-      previous node or cell.
-   4. if no collision, put the word into the table
+   3. Create new node and initialise it. 
+      s->table[set_index] point to Next new node
+      New node point back to the s->table[set_index] 
+   4. number of element ++
 */
 void dic_insert(dic*s, char *v)
 {
    int set_index;
-   dictype *p,*Newnode;
-   if (table_isFulled(s))
+   dictype *Newnode;
+   Newnode = chain_initi(v);
+   strcpy(Newnode->word,v);
+   set_index = hash(v,s->sz);
+   Newnode ->next = s->table[set_index];
+   s->table[set_index] = Newnode;
+   s->num++;
+   if (s->num >= s->sz*GROWCON)
    {
-      s->table = resize(s,v);
-   }
-   if (s!=NULL)
-   {
-      set_index = hash(v,s->sz);
-      p = &(s->table[set_index]);
-      if(strcmp(p->word,EMPTY)!=0) 
-      {
-         while(p->next!=NULL)
-         {
-            p = p->next;
-         }
-         Newnode = chain_initi(v);
-         Newnode->next = NULL;
-         strcpy(Newnode->word,v);
-         p->next = Newnode;
-      }else{
-         strcpy(p->word,v);
-      }
+         grow(s);
    }
 }
 /* 
    1. get the index from hashing function 
    2. point to the cell, check if the word is the same
       return true. Else check the chain list.
-   3. do the while loop, check until the cell is null
-      or the word is found.
 */
 bool dic_isin(dic*s, char *v)
 {
    int find_index;
    dictype *p;
    find_index = hash(v,s->sz); 
-   p = &(s->table[find_index]);
-   if(strcmp(p->word,v)!=0)
+   p = s->table[find_index];
+   while(p!=EMPTY)
    {
-      while(p->next!=NULL)
-      {
-         if(strcmp(p->next->word,v)==0)
+         if(strcmp(p->word,v)==0)
          {
-
             return true;
          }
          p = p->next;
-      }
-      return false;
-   }
-   return true;
-}
 
+   }
+   return false;
+}
+/* 
+   1. go into each cell in the table
+   2. if cell is not empty, go into each chain
+      and free the space.
+   3. free the table and dict
+*/
 void dic_free(dic **s)
 {
-   if (s != NULL)
-   {
-      dic *point = *s;
-      free(point->table);
-      free(point);
-      *s = NULL;
-   }
+      int i;
+      dic *pointer=*s;
+      dictype *p,*next;
+      for (i=0; i<pointer->sz;i++)
+      {
+            p = pointer->table[i];
+            while(p!=EMPTY)
+            {
+                  next = p->next;
+                  free(p->word);
+                  free(p);
+                  p = next;
+            }
+      }
+      free(pointer->table);
+      free(pointer);
 }
 
 

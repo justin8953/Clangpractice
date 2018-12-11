@@ -94,22 +94,21 @@ bool dic_isin(dic*s, char *v)
    2. go to upper level, and check again. 
 */
 
-void dic_free(dic **s)
+void dic_free(dic *s)
 {
    if (s != NULL)
    {
-      dic *p = *s;
-      if (p->left!=NULL)
+      if (s->left==NULL && s->right == NULL)
       {
-         dic_free(&(p->left));
-      }else if(p->right!=NULL)
+            free(s);
+            s = NULL;
+      }
+      else if (s->left!=NULL)
       {
-         dic_free(&(p->right));
-      }else
+         dic_free(&(s->left));
+      }else if(s->right!=NULL)
       {
-         free(p->word);
-         free(p);
-         s = NULL;
+         dic_free(&(s->right));
       }
    }
 }

@@ -1,5 +1,10 @@
 {
    "files.associations": {
-      "hsh.h": "c"
+      "hsh.h": "c",
+      "limits": "c",
+      "type_traits": "c",
+      "stdio.h": "c",
+      "stdlib.h": "c",
+      "string.h": "c"
    }
 }

@@ -27,14 +27,15 @@ int main(int argc, char** argv)
    while(fscanf(fw, "%s", str) == 1){
       dic_insert(dl, str);
    }
+
    fclose(fw);
    /* Read in book - each spelling mistake stored into db
       so that you don't have to search for it again */
-   while(fscanf(fb, "%s", str) == 1){
+   while(fscanf(fb, "%s", str) == 1){ 
       if(!dic_isin(dl, str) && !dic_isin(db,str)){
          dic_insert(db, str);
+         printf("%s \n", str);
          count++;
-         printf("%s \n",str);
       }
    }
    printf("%d \n",count);

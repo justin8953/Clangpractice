@@ -27,6 +27,6 @@ bool dic_isin(dic*s, char *v);
 
 /* Finish up */
 /* Clears all space used, and sets pointer to NULL */
-void dic_free(dic **s);
+void dic_free(dic *s);
 
 #endif
