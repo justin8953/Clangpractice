@@ -3,9 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
 #define ON_ERROR(STR) fprintf(stderr, STR); exit(EXIT_FAILURE)
+
 enum bool {false, true};
 typedef enum bool bool;
 
