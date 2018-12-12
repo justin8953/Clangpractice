@@ -97,7 +97,7 @@ void dic_free(dic **s)
 {
       if (s != NULL)
       {
-            dic *p = *s ;
+            dic *p = *s;
             if (p->left==NULL && p->right == NULL)
             {
                   free(p);
@@ -105,10 +105,12 @@ void dic_free(dic **s)
             }
       else if (p->left!=NULL)
       {
-         dic_free(&(p->left));
+            p = p->left;
+            dic_free(&p);
       }else if(p->right!=NULL)
       {
-         dic_free(&(p->right));
+            p = p->right;
+            dic_free(&p);
       }
    }
 }
