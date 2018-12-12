@@ -7,7 +7,7 @@ int hash(char *s, int size)
    int c;
    while ((c=(*s++)))
    {
-      hash = HASHMUTINUM* hash^c;
+      hash = HASHMUTINUM * hash^c;
    }
    return (int)(hash%size);
 }
@@ -46,7 +46,16 @@ dictype *chain_initi(char *v)
 {
    dictype *node;
    node = (dictype *)malloc(sizeof(dictype));
+   if (node==NULL)
+   {
+      ON_ERROR("Creation of node Failed \n");
+   }   
    node->word = (char *)malloc(sizeof(char)*(strlen(v)+1));
+   if (node->word==NULL)
+   {
+      ON_ERROR("Creation of word space Failed \n");
+   }   
+   node->next = EMPTY;
    return node;
 }
 /* Grow Table
@@ -66,20 +75,17 @@ void grow(dic *s)
       NewDict = dic_init(s->sz*GROWFACT);
       for (i=0; i<s->sz; i++)
       {
-
             p = s->table[i];
             while(p!=EMPTY)
             {
                   dic_insert(NewDict,p->word);
-                  p = p->next;
-                  
+                  p = p->next;        
             }
       }
       tmp = *s;
       *s = *NewDict;
       *NewDict = tmp;
       dic_free(&NewDict);
-      
 }
 
 /* 

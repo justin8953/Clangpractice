@@ -40,7 +40,6 @@ dic* dic_init(int size);
 /* intialise the linked list cell */
 dictype *chain_initi(char *v);
 
-
 /* hashing function */
 int hash(char *s,int tablesize);
 

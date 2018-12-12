@@ -1,6 +1,5 @@
 #include "bst.h"
 
-
 /* 
    1.Intialise the dictionary 
    2.Set up the node with no element
@@ -94,21 +93,22 @@ bool dic_isin(dic*s, char *v)
    2. go to upper level, and check again. 
 */
 
-void dic_free(dic *s)
+void dic_free(dic **s)
 {
-   if (s != NULL)
-   {
-      if (s->left==NULL && s->right == NULL)
+      if (s != NULL)
       {
-            free(s);
-            s = NULL;
-      }
-      else if (s->left!=NULL)
+            dic *p = *s ;
+            if (p->left==NULL && p->right == NULL)
+            {
+                  free(p);
+                  s = NULL;
+            }
+      else if (p->left!=NULL)
       {
-         dic_free(&(s->left));
-      }else if(s->right!=NULL)
+         dic_free(&(p->left));
+      }else if(p->right!=NULL)
       {
-         dic_free(&(s->right));
+         dic_free(&(p->right));
       }
    }
 }
