@@ -1,0 +1,9 @@
+{
+   DO A FROM 1 TO 20 {
+      FD A
+      DO B FROM 1 TO 3 {
+         FD 5
+         RT 120
+      }
+   }
+}

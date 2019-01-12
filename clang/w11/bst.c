@@ -1,10 +1,11 @@
-#include "bst.h"
+#define ON_ERROR(STR) fprintf(stderr, STR); exit(EXIT_FAILURE)
+
 
 /* 
-   1.Intialise the dictionary 
-   2.Set up the node with no element
+   Intialise the dictionary 
+   1.Create new node 
    3.Intialise the word to with WORDSIZE
-   4.Left and right node set up with NULL
+   4.Left and right node set up to NULL
 */
 dic* dic_init(int size)
 {
@@ -39,29 +40,29 @@ void dic_insert(dic*s, char *v)
    dic* NewNode;
    if (s !=NULL|| strcmp(v,s->word)!=0)
    {
-      if (strcmp(v, s->word)>0)
-      {
-            if (s->right == NULL)
-            {
-                  NewNode = dic_init(strlen(v)+1);
-                  strcpy(NewNode->word, v);
-                  s->right = NewNode;
-            }else
-            {
-                  dic_insert(s->right,v);
-            }
-      }else{
-            if (s->left == NULL)
-            {
-                  NewNode = dic_init(strlen(v)+1);
-                  strcpy(NewNode->word, v);
-                  s->left = NewNode;
-            }else
-            {
-                  dic_insert(s->left,v);
-            }
+		if (strcmp(v, s->word)>0)
+		{
+			if (s->right == NULL)
+			{
+				NewNode = dic_init(strlen(v)+1);
+         	strcpy(NewNode->word, v);
+            s->right = NewNode;
+         }else
+         {
+				dic_insert(s->right,v);
+         }
+      }else{   
+			if (s->left == NULL)   
+			{      
+				NewNode = dic_init(strlen(v)+1);
+				strcpy(NewNode->word, v);
+				s->left = NewNode;
+			}else
+			{
+				dic_insert(s->left,v);
+         }
       }
-   } 
+	} 
 }
 /* 
    1. check from the root. 
@@ -73,7 +74,7 @@ bool dic_isin(dic*s, char *v)
 {
    if (s!=NULL)
    {
-      if (strcmp(s->word,v)==0)
+		if (strcmp(s->word,v)==0)
       {
          return true;
       }
@@ -92,26 +93,22 @@ bool dic_isin(dic*s, char *v)
       if child exist, free rigth side 
    2. go to upper level, and check again. 
 */
-
 void dic_free(dic **s)
-{
-      if (s != NULL)
-      {
-            dic *p = *s;
-            if (p->left==NULL && p->right == NULL)
-            {
-                  free(p);
-                  s = NULL;
-            }
-      else if (p->left!=NULL)
-      {
-            p = p->left;
-            dic_free(&p);
-      }else if(p->right!=NULL)
-      {
-            p = p->right;
-            dic_free(&p);
-      }
-   }
+{   
+	if ((*s)==NULL && s==NULL)
+	{
+		return ;
+	}
+	if ((*s)->right!=NULL) 
+	{      
+		dic_free(&(*s)->right);  
+	} 
+	if ((*s)->left!=NULL) 
+	{     
+		dic_free(&(*s)->left);  
+	}         
+	free((*s)->word);   
+	free(*s);   
+	*s = NULL;
 }
 

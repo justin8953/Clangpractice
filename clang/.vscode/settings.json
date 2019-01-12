@@ -5,6 +5,12 @@
       "type_traits": "c",
       "stdio.h": "c",
       "stdlib.h": "c",
-      "string.h": "c"
-   }
+      "string.h": "c",
+      "bst.h": "c",
+      "parse_function.h": "c",
+      "neillsdl2.h": "c",
+      "sdl.h": "c",
+      "assert.h": "c"
+   },
+   "editor.tabSize": 3
 }

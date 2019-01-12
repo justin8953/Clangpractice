@@ -1,0 +1,18 @@
+{
+   FD 50 
+   LT 45 
+   FD 50 
+   LT 45
+   FD 50 
+   LT 45 
+   FD 50 
+   LT 45 
+   FD 50 
+   LT 45
+   FD 50 
+   LT 45 
+   FD 50 
+   LT 45 
+   FD 50 
+   LT 45
+}

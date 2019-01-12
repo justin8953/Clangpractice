@@ -1,4 +1,23 @@
-#include "hsh.h"
+#define GROWFACT 2
+#define GROWCON 0.6
+#define HASHNUM 5381
+#define HASHMUTINUM 33
+#define EMPTY 0
+#define ON_ERROR(STR) fprintf(stderr, STR); exit(EXIT_FAILURE)
+
+/*------Declaration-----*/
+
+/* Grow the table */
+void grow(dic *s);
+/* intialise the linked list cell */
+dictype *chain_initi(char *v);
+
+/* hashing function */
+int hash(char *s,int tablesize);
+
+/*----------------------*/
+
+/*----==-Function-------*/
 
 /* Hashing function*/
 int hash(char *s, int size)
@@ -59,33 +78,33 @@ dictype *chain_initi(char *v)
    return node;
 }
 /* Grow Table
-      1. Create New Dict and Initialise 
-         it size with 2 times large
-      2. Rehash previous Dict and Insert
-         into new Dict
-      3. Store old dic in tempory place
-         and Swap old and new dictionary
-      4. free the old dictionary 
+	1. Create New Dict and Initialise 
+		it size with 2 times large
+   2. Rehash previous Dict and Insert
+		into new Dict
+   3. Store old dic in tempory place
+      and Swap old and new dictionary
+   4. free the old dictionary 
 */
 void grow(dic *s)
 {     
-      dic *NewDict, tmp;
-      dictype *p;
-      int i;
-      NewDict = dic_init(s->sz*GROWFACT);
-      for (i=0; i<s->sz; i++)
+   dic *NewDict, tmp;
+   dictype *p;
+   int i;
+   NewDict = dic_init(s->sz*GROWFACT);
+   for (i=0; i<s->sz; i++)
+   {
+      p = s->table[i];
+      while(p!=EMPTY)
       {
-            p = s->table[i];
-            while(p!=EMPTY)
-            {
-                  dic_insert(NewDict,p->word);
-                  p = p->next;        
-            }
+         dic_insert(NewDict,p->word);
+         p = p->next;        
       }
-      tmp = *s;
-      *s = *NewDict;
-      *NewDict = tmp;
-      dic_free(&NewDict);
+   }
+   tmp = *s;
+   *s = *NewDict;
+   *NewDict = tmp;
+   dic_free(&NewDict);
 }
 
 /* 
@@ -109,7 +128,7 @@ void dic_insert(dic*s, char *v)
    s->num++;
    if (s->num >= s->sz*GROWCON)
    {
-         grow(s);
+		grow(s);
    }
 }
 /* 
@@ -125,12 +144,11 @@ bool dic_isin(dic*s, char *v)
    p = s->table[find_index];
    while(p!=EMPTY)
    {
-         if(strcmp(p->word,v)==0)
-         {
-            return true;
-         }
-         p = p->next;
-
+		if(strcmp(p->word,v)==0)
+      {
+         return true;
+      }
+      p = p->next;
    }
    return false;
 }
@@ -142,27 +160,22 @@ bool dic_isin(dic*s, char *v)
 */
 void dic_free(dic **s)
 {
-      int i;
-      dic *pointer=*s;
-      dictype *p,*next;
-      for (i=0; i<pointer->sz;i++)
+   int i;
+   dic *pointer=*s;
+   dictype *p,*next;
+   for (i=0; i<pointer->sz;i++)
+   {
+		p = pointer->table[i];
+      while(p!=EMPTY)
       {
-            p = pointer->table[i];
-            while(p!=EMPTY)
-            {
-                  next = p->next;
-                  free(p->word);
-                  free(p);
-                  p = next;
-            }
+      	next = p->next;
+         free(p->word);
+         free(p);
+         p = next;
       }
-      free(pointer->table);
-      free(pointer);
+   }
+   free(pointer->table);
+   free(pointer);
 }
-
-
-
-
-
 
 
