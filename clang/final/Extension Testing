@@ -1,0 +1,32 @@
+Extension Testing 
+
+In extension, I created 10 new grammars. 7 grammars were using in SDL drawing graph. The other grammars were doing to import function and use function.
+1.
+	IMPORT FUNCTION <IMPORT> <VAR> ,  
+	DOING FUNCTION  <Library>"."<Function> "(" <INPUT> ")"	
+						 <INPUT> ::=  <VAR> ":=" <POLISH>"," 
+						 || <INPUT> || <VOID>
+	DEF FUNCTION    <DEF> <STRING> <MAIN>
+	i.		To implement the library imported and function used, I created a library table by using BST. In this table, it contained library name, token list, token counter, token list size, and left and right node. 
+	ii.	Besides, in program structure, I used linkedlist to do the 
+	function so that when the function finish, I can free the node.
+	
+	iii. To import library, I restrain that it can only be imported in the beginning. For the library name, user just need to write file name and dont need to write file type. Then, I did the string processing and open the files to load the tokens into library token list.
+	
+	iv. To check user is using function, user need to write <Library>"."<Function> "(" <INPUT> ")". Firstly, i check library is exist and has been load into library table. Then, I used "DEF" to check the function is in token list, and when I get "DEF" again, function gets the end.
+	v.	After reading the library and function I used are in the existed ,  I copy all tokens in the functio into next program token list.
+
+	vi. Then, i used the same way as SET to assign input or use void function. For using input, I declare variable first and assign number into variable. When I get the ")", then I execute the program and free the program after function finish.
+
+2. <CIRCLE> <VARNUM>  and <CIRCLES> <VARNUM>
+	One is drawing one cirecle and <VARNUM> is its radius.
+	The other is drawing a group of circle with random size. <VARNUM> is the number of circle set.
+3. <CLEAN>
+	Clean the screen
+4. <RESET> <VARNUM> <VARNUM> <VARNUM>
+	Reset location. First parameter is x, second one is y, and last one is degree. 
+5. <DELAY> <VARNUM>
+	Delay time.
+6. <COLOR> <VARNUM> <VARNUM> <VARNUM>
+	Drawing color with (R,G,B)
+7. <TEXT> <STRING>  <VARNUM> <VARNUM> <VARNUM>	Drawing the string on the screen with (R,G,B)

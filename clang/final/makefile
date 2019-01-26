@@ -1,4 +1,4 @@
-LIBS = `sdl2-config --libs` -lm
+LIBS = `sdl2-config --libs` -lSDL2_ttf -lm
 CFLAGS = -Wall -Wextra -Werror -Wfloat-equal -pedantic -ansi $(LIBS)
 DEBUG = -g3
 OPTIM = -O2
@@ -11,12 +11,14 @@ TEXT5 = flow.txt
 TEXT6 = foward_test.txt
 TEXT7 = octloop.txt
 TEXT8 = triangle.txt
-all: interp parse 
+all: interp parse extension
 
-interp: blocks.c neillsdl2.c parse.c parse_function.h parse_instruct.h neillsdl2.h
-	$(CC) blocks.c neillsdl2.c parse.c -o interp $(CFLAGS) $(OPTIM) -include neillsdl2.h -include parse_function.h  -include parse_instruct.h 
-parse: test_function.c  neillsdl2.c parser_test.c parse.c parse_instruct.h neillsdl2.h test_function.h
-	$(CC) test_function.c parser_test.c parse.c neillsdl2.c -o parse $(CFLAGS) $(OPTIM) -include neillsdl2.h -include parse_instruct.h  -include parse_function.h  -include test_function.h
+extension: extension.c neillsdl2.c interpreter_function.c turtle_function.c  turtle_function.h interpreter_function.h grammar.h neillsdl2.h 
+	$(CC) extension.c neillsdl2.c interpreter_function.c turtle_function.c -o extension $(CFLAGS) $(OPTIM) -include neillsdl2.h -include turtle_function.h -include interpreter_function.h  -include grammar.h  
+interp: interp.c   neillsdl2.c interpreter_function.c turtle_function.c turtle_function.h interpreter_function.h grammar.h neillsdl2.h 
+	$(CC) interp.c  neillsdl2.c interpreter_function.c turtle_function.c -o interp $(CFLAGS) $(OPTIM) -include neillsdl2.h -include turtle_function.h -include interpreter_function.h  -include grammar.h  
+parse: parse.c parser_function.c neillsdl2.c turtle_function.c turtle_function.h grammar.h neillsdl2.h parser_function.h
+	$(CC) parse.c parser_function.c turtle_function.c neillsdl2.c -o parse $(CFLAGS) $(OPTIM) -include neillsdl2.h -include turtle_function.h  -include grammar.h    -include parser_function.h
 
 run: all
 	./parse $(TEXT1)
@@ -28,6 +30,6 @@ run: all
 	./parse $(TEXT7)
 	./parse $(TEXT8)
 clean:
-	rm -f interp parse
+	rm -f interp parse extension
 
 .PHONY: clean run all

@@ -1,15 +1,18 @@
 /* Do something standard everytime an error is trapped */
 #define ON_ERROR(STR) fprintf(stderr, "\n%s: %s\n", STR, SDL_GetError()); SDL_Quit(); exit(1);
 
+
 /* Set up a simple (WIDTH, HEIGHT) window.
    Attempt to hide the renderer etc. from user. */
 void Neill_SDL_Init(SDL_Simplewin *sw)
 {
-
    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
       ON_ERROR("Unable to initialize SDL");
    } 
-
+   if (TTF_Init()==-1)
+   {
+       ON_ERROR("Unable to initialize SDL");
+   }
    sw->finished = 0;
    sw->win= SDL_CreateWindow("SDL Window",
                           SDL_WINDOWPOS_UNDEFINED,
@@ -19,14 +22,12 @@ void Neill_SDL_Init(SDL_Simplewin *sw)
    if(sw->win == NULL){
       ON_ERROR("Unable to initialize SDL Window");
    }
-
    sw->renderer = SDL_CreateRenderer(sw->win, -1,
                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
    if(sw->renderer == NULL){
       ON_ERROR("Unable to initialize SDL Renderer");
    }
    SDL_SetRenderDrawBlendMode(sw->renderer,SDL_BLENDMODE_BLEND);
-
    /* Create texture for display */
    sw->display = SDL_CreateTexture(sw->renderer, SDL_PIXELFORMAT_RGBA8888,
                    SDL_TEXTUREACCESS_TARGET, WWIDTH, WHEIGHT);
@@ -34,13 +35,10 @@ void Neill_SDL_Init(SDL_Simplewin *sw)
       ON_ERROR("Unable to initialize SDL texture");
    }
    SDL_SetRenderTarget(sw->renderer, sw->display);
-
    /* Clear screen, & set draw colour to black */
    SDL_SetRenderDrawColor(sw->renderer, 0, 0, 0, 255);
    SDL_RenderClear(sw->renderer);
-
 }
-
 /* Housekeeping to do with the render buffer & updating the screen */
 void Neill_SDL_UpdateScreen(SDL_Simplewin *sw)
 {
@@ -64,7 +62,32 @@ void Neill_SDL_Events(SDL_Simplewin *sw)
        }
     }
 }
-
+void LOAD_FONT (SDL_Simplewin *sw, char *s, int R, int G, int B)
+{
+   SDL_Color textcolor;
+   textcolor.r = R;
+   textcolor.g = G;
+   textcolor.b = B;
+   sw->font = TTF_OpenFont( "DejaVuSans-Bold.ttf", 16 ); 
+   if(!sw->font)
+   {
+       printf("TTF_OpenFont: Open simsun.ttf %s\n", TTF_GetError());
+   }   
+   sw->text = TTF_RenderText_Solid (sw->font, s,textcolor);
+   if( sw->text  == NULL )
+   {
+        printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+   }
+   sw->display=  SDL_CreateTextureFromSurface( sw->renderer, sw->text );
+   if( sw->display  == NULL )
+   {
+        printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+   }
+   Neill_SDL_UpdateScreen(sw);
+   TTF_CloseFont((sw->font));
+   TTF_Quit();
+   SDL_FreeSurface((sw->text));
+}
 
 /* Trivial wrapper to avoid complexities of renderer & alpha channels */
 void Neill_SDL_SetDrawColour(SDL_Simplewin *sw, Uint8 r, Uint8 g, Uint8 b)
@@ -146,3 +169,4 @@ void Neill_SDL_ReadFont(fntrow fontdata[FNTCHARS][FNTHEIGHT], char *fname)
    }
    fclose(fp);
 }
+

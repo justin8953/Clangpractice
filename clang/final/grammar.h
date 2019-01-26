@@ -16,13 +16,19 @@
 #define DEVIDE "/"
 #define PLUS "+"
 #define MINUS "-"
-
+#define CIRCLE "CIRCLE"
+#define CIRCLES "CIRCLES"
 #define IMPORT "IMPORT"
 #define DEF "DEF"
 
-
+#define PARENTHESE_OPEN "("
+#define PARENTHESE_CLOSE  ")"
+#define COMMA ","
+#define VOID "VOID"
 #define COLOR "COLOR"
 #define RESET "RESET"
 #define DELAY "DELAY"
+#define CLEAN "CLEAN"
+#define MESSAGE "MESSAGE"
 
 #endif

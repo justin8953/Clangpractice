@@ -1,152 +1,28 @@
-{
-   DO A FROM 1 TO 50 {
-      COLOR 239 220 5
-      LT 90
-      FD 200
-      RT 90
-      FD 1
-      RT 90 
-      FD 200
-      LT 90
-      FD 1
-   }
-   RESET
-   LT 90
-   FD 100
-   RT 90
-   COLOR 1 1 1
-   FD 50
-   RESET
-   COLOR 239 220 5
-   LT 90
-   FD 20
-   RT 90
-   DO A FROM 1 TO 41 {
-      COLOR 254 254 254
-      LT 90
-      FD 40
-      RT 90
-      FD 1
-      RT 90 
-      FD 40
-      LT 90
-      FD 1
-   }
-   RESET
-   FD 25
-   COLOR 239 220 5
-   LT 90
-   FD 20
-   COLOR 254 254 254
-   FD 15
-   DO A FROM 1 TO 8 {
-      COLOR 1 1 1
-      FD 10
-      RT 90
-      FD 1
-      RT 90
-      FD 10
-      LT 90
-      FD 1
-      LT 90
-   }
-   RESET
-   COLOR 254 254 254
-   LT 90
-   FD 20
-   RT 90
-   COLOR 1 1 1
-   FD 80
-   LT 90
-   FD 15
-   RT 90
-   FD 20
-   LT 90
-   FD 5
-   LT 90
-   FD 20
-   RT 90
-   FD 20
-   LT 90
-   FD 80
-   RESET
-   COLOR 239 220 5
-   LT 90
-   FD 200
-   LT 90
-   FD 1
-   DO B FROM 1 TO 50 {
-      COLOR 239 220 5
-      LT 90
-      FD 200
-      RT 90
-      FD 1
-      RT 90
-      FD 200
-      LT 90
-      FD 1
-   }
-   RESET
-   LT 90
-   FD 100
-   LT 90
-   COLOR 1 1 1
-   FD 50
-   RESET
-   COLOR 239 220 5
-   LT 90
-   FD 20
-   COLOR 254 254 254
-   FD 40
-   LT 90
-   FD 1
-   DO A FROM 1 TO 41 {
-      LT 90
-      FD 40
-      RT 90 
-      FD 1
-      RT 90
-      FD 40
-      LT 90
-      FD 1
-   }
-   RESET
-   LT 180
-   FD 25
-   COLOR 239 220 5
-   RT 90
-   FD 20
-   COLOR 254 254 254
-   FD 15
-   DO A FROM 1 TO 8 {
-      COLOR 1 1 1
-      FD 10
-      LT 90
-      FD 1
-      LT 90
-      FD 10
-      RT 90
-      FD 1
-      RT 90
-   }
-   RESET
-   COLOR 239 220 5
-   LT 90
-   FD 20
-   LT 90
-   COLOR 1 1 1
-   FD 80
-   RT 90
-   FD 15
-   LT 90
-   FD 20
-   RT 90
-   FD 5
-   RT 90
-   FD 20
-   LT 90
-   FD 20
-   RT 90
-   FD 80
+IMPORT extension_function  {
+   MESSAGE 239 220 5 MyExtension
+   extension_function.textbackground ( VOID )
    DELAY 1000
+   CLEAN
+   CIRCLES 50
+   CLEAN
+   MESSAGE 239 220 5 HappyNewYear
+   extension_function.textbackground ( VOID )
+   DELAY 1000
+   CLEAN 
+   extension_function.nested ( VOID )
+   DELAY 500 
+   CLEAN
+   extension_function.octagon ( LENGTH := 100 , ) 
+   extension_function.eyes ( X := 400 , Y := 300 , )
+   extension_function.eyes ( X := 500 , Y := 300 , )
+   extension_function.EAR ( X := 350 , Y := 220 , )
+   extension_function.EAR ( X := 550 , Y := 220 , )
+   extension_function.nose ( LENGTH := 30 , X := 450 , Y := 350 , )
+   extension_function.noseinside ( LENGTH := 5 , X := 440 , Y := 350 , )
+   extension_function.noseinside ( LENGTH := 5 , X := 460 , Y := 350 , )
+   extension_function.body ( LENGTH := 100 , X := 350 , Y := 530 , )
+   extension_function.HAND ( LENGTH := 15 , X := 370 , Y := 470 , )
+   extension_function.HAND ( LENGTH := 15 , X := 530 , Y := 470 , )
+   extension_function.sun ( LENGTH := 60 , X := 100 , Y := 100 , )
+   DELAY 1000   
 }

@@ -2,12 +2,10 @@
 int main(int argc, char const *argv[])
 {
    FILE *fn;
+   SDL_Simplewin sw;
    int i;
    Prog *prog;
-   printf( "START TESTING ..........  \n");
-   test_all();
-   printf( "ALL PASS ...... \n");
-   printf( "-----TESTING FILES ----- \n");
+   test_extension_all();
    if (argc !=2)
    {
       fprintf(stderr, "Usage : i%s <parse file>", argv[0]);
@@ -16,10 +14,10 @@ int main(int argc, char const *argv[])
    printf("Intilise ..... \n");
    if(!(fn = fopen(argv[1],"r")))
    {
-      fprintf(stderr, "Cannot open %s \n",argv[1]);
+      fprintf(stderr, "Cannot open test.txt \n");
       exit(2);
    }
-   printf("File open ..... \n");
+   printf("File %s open ..... \n",argv[1]);
    i = 0;
    while(fscanf(fn, "%s",prog->tokenlist[i++].token)==1)
    {
@@ -28,16 +26,19 @@ int main(int argc, char const *argv[])
          Prog_grow(prog,i);
       }
    }
-   printf("File Loaded ..... \n");
+   printf("File Load ..... \n");
+   Neill_SDL_Init(&sw);
    printf("Program Start ..... \n");
-   parserstart(prog);
+   Block_start(prog, &sw);
    printf("Program End ..... \n");
    /* Clear up graphics subsystems */
+   SDL_Quit();
+   atexit(SDL_Quit);  
    printf("Program Free ..... \n");
    program_free(&prog);
    printf("File Close ..... \n");
    fclose(fn);
-   printf( "-----PASS ----- \n");
+   
    /* code */
    return 0;
 }

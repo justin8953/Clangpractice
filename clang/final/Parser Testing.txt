@@ -1,0 +1,37 @@
+Parser Testing
+
+1. For the program structure, I used a dynamic array to store token. Variable table I selected to use binary tree table, which included variable name, value, and left and right node. Also, I used stack to do RPN calculation. Besides, the token list table can dynamically increase the size by using growing function.
+
+2. The First testing is intialisation function. Then, I tested the token list growing function.
+
+3. The instruction list testing contained two parts. First part is basic grammar, the other is extension. 
+	- Basic grammar:
+		i. 	FD VARNUM LT VARNUM RT VARNUM
+					In this testing, I avoided someone types the variable name in the grammar by using "invalid_token" function. 
+		ii.	DO VAR FROM VARNUM TO VARNUM
+					Basically, I tested main function in this instruction. Firstly, I made sure user types the variable name which is not in grammar.
+		iii. 	SET VAR := VARNUM POLISH || OP POLISH ;
+					In this Testing, after ":=" it will do polish.
+					In polish testing, I used enumerate function to check using operator or number or variable. If it got the ";" , program leave polish function. Else do polish function. 
+					For semantic error, it will be solved in interpreter. 
+	- Extension :
+		New Grammar:
+		i. 	COLOR R G B --- R : VARNUM G : VARNUM B: VARNUM
+					
+		ii.	RESET X Y DEGREE ---- X : VARNUM Y : VARNUM DEGREE: VARNUM
+
+		iii.	DELAY TIME ---- TIME : VARNUM
+
+		iv.	LIBRARY.FUNCTION ( TYPE ) ---- TYPE : VOID || INPUT  
+				INPUT ---- VAR := POLISH || INPUT , 
+				EXAMPLE : Extension.triangle ( VOID ) 
+				or Extension.nose ( A := 1 , B := 2 , )
+		
+
+		Basically, it's the same as previous testing which avoid someone types invalid token. 
+		In testing doing function, if token has dot, it meaned using function. 
+		Then, after getting the open parethese, testing polish. If it got "," it
+		goes to check next variable assigned. If it got the ")", then it leave the
+		polish function. 
+
+	
