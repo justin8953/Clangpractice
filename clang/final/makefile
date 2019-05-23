@@ -3,14 +3,8 @@ CFLAGS = -Wall -Wextra -Werror -Wfloat-equal -pedantic -ansi $(LIBS)
 DEBUG = -g3
 OPTIM = -O2
 VALGRIND = --error-exitcode=1 --quiet --leak-check=full
-TEXT1 = oct.txt
-TEXT2 = loop.txt
-TEXT3 = nested.txt
-TEXT4 = circle.txt
-TEXT5 = flow.txt
-TEXT6 = foward_test.txt
-TEXT7 = octloop.txt
-TEXT8 = triangle.txt
+TEXT1 = nested.txt
+TEXT2 = extension.txt
 all: interp parse extension
 
 extension: extension.c neillsdl2.c interpreter_function.c turtle_function.c  turtle_function.h interpreter_function.h grammar.h neillsdl2.h 
@@ -22,13 +16,10 @@ parse: parse.c parser_function.c neillsdl2.c turtle_function.c turtle_function.h
 
 run: all
 	./parse $(TEXT1)
-	./parse $(TEXT2)
-	./parse $(TEXT3)
-	./parse $(TEXT4)
-	./parse $(TEXT5)
-	./parse $(TEXT6)
-	./parse $(TEXT7)
-	./parse $(TEXT8)
+	./interp $(TEXT1)
+	./extension $(TEXT1)
+	./extension $(TEXT2)
+
 clean:
 	rm -f interp parse extension
 

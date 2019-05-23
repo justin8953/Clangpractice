@@ -29,4 +29,6 @@ In extension, I created 10 new grammars. 7 grammars were using in SDL drawing gr
 	Delay time.
 6. <COLOR> <VARNUM> <VARNUM> <VARNUM>
 	Drawing color with (R,G,B)
-7. <TEXT> <STRING>  <VARNUM> <VARNUM> <VARNUM>	Drawing the string on the screen with (R,G,B)
+7. <TEXT> <STRING>  <VARNUM> <VARNUM> <VARNUM>	
+	using sdl_ttf : https://www.libsdl.org/projects/SDL_ttf/
+	Drawing the string on the screen with (R,G,B)

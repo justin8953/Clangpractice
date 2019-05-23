@@ -11,10 +11,12 @@ Interpreter Testing
 			a. the same as a. in FD instruction.
 			b. LT will clockwise rotate. degree+=VARNUM. RT will 
 				counter-clockwise rotate. degree +- VARNUM
+
 	ii.   DO VARNUM FROM VARNUM TO VARNUM :
 			a. declare variable and store in temporary place. If it declares failed, then return NULL. 
 			b. getting start number is checked that  if VARNUM is number, it will return number. If VARNUM is variable, it will check variable has been assigned. If variable is not assigned, throw error.
 			c. getting end number is checked the same as start number.
+			
 	iii. SET VAR := POLISH
 			a. check ";" is in the end. 
 			b. using Push and Pop to avoid semantic fault. Once it gets 		operator, it pops two number out. if it gets VARNUM, then
